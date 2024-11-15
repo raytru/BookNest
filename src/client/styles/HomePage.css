@@ -1,0 +1,23 @@
+.homepage {
+  height: 100vh; /* Takes up full viewport height */
+  text-align: center;
+  background-color: var(--custom-hero-color); /* Custom background color */
+  color: var(--custom-color); /* Custom text color */
+}
+
+.hero {
+  max-width: 600px;
+  margin: auto;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  color: var(--custom-color-brand); /* Brand color for the title */
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: var(--custom-color-secondary); /* Secondary color for the description */
+  margin-bottom: 30px;
+}
