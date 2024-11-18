@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { supabase } from '../../../supabaseClient.js';
 import { Link } from 'react-router-dom';
 import '../../styles/forms.css';
@@ -6,29 +7,22 @@ import '../../styles/forms.css';
 export default function RequestPasswordReset() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
 
   const handlePasswordReset = async (event) => {
     event.preventDefault();
-    setMessage('');
-
-    if (!email) {
-      setMessage('Please input a valid email address.')
-      return;
-    }
-
+ 
     setLoading(true);
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'http://localhost:5174/UpdatePassword',
+      redirectTo: 'http://localhost:5173/UpdatePassword',
     })
 
     setLoading(false)
 
     if (error) {
-      setMessage(error.error_description || error.message)
+      toast.error(error.error_description || error.message)
     } else {
-      setMessage('Password reset link sent! Please check your email and follow the instructions to reset your password.')
+      toast.success('Password reset link sent! Please check your email and follow the instructions to reset your password.')
     }
   }
 

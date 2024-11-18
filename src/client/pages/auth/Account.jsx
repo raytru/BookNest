@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { supabase } from "../../../supabaseClient.js";
 
 export default function Account({ session }) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
+  const [hasLoggedIn, setHasLoggedIn] = useState(false);
 
   useEffect(() => {
     let ignore = false;
+
     async function getProfile() {
       setLoading(true);
       const { user } = session;
@@ -21,9 +24,15 @@ export default function Account({ session }) {
       if (!ignore) {
         if (error) {
           console.warn(error);
+          toast.error("Failed to load profile.");
         } else if (data) {
           setUsername(data.username);
           setAvatarUrl(data.avatar_url);
+
+          if (!hasLoggedIn) {
+            setHasLoggedIn(true);
+            toast.success("Signed in successfully.");
+          }
         }
       }
 
@@ -35,7 +44,7 @@ export default function Account({ session }) {
     return () => {
       ignore = true;
     };
-  }, [session]);
+  }, [session, hasLoggedIn]);
 
   async function updateProfile(event, avatarUrl) {
     event.preventDefault();
@@ -51,10 +60,16 @@ export default function Account({ session }) {
     };
     const { error } = await supabase.from("profiles").upsert(updates);
 
+    if (!username) {
+      toast.error("Please enter a valid username");
+      return;
+    }
+
     if (error) {
-      alert(error.message);
+      toast.error(error.message);
     } else {
       setAvatarUrl(avatarUrl);
+      toast.success("Profile updated successfully");
     }
     setLoading(false);
   }
@@ -92,7 +107,7 @@ export default function Account({ session }) {
           onClick={() => supabase.auth.signOut()}
         >
           Sign Out
-        </button>
+        </button>    
       </div>
     </form>
   );

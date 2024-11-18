@@ -4,11 +4,11 @@ import { supabase } from '../../supabaseClient';
 import LoginPage from '../pages/auth/LoginPage.jsx';
 import RegisterPage from '../pages/auth/RegisterPage.jsx';
 import RequestPasswordReset from '../pages/auth/RequestPasswordReset.jsx';
-//import UpdatePassword from '../pages/auth/UpdatePassword.jsx';
 import Account from '../pages/auth/Account.jsx';
 import HomePage from './HomePage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import UpdatePassword from './auth/UpdatePassword.jsx';
+import ToastConfig from "../components/ToastConfig.jsx";
 
 function App() {
   const [session, setSession] = useState(null);
@@ -37,6 +37,7 @@ function App() {
 
   return (
     <Router>
+      <ToastConfig />
       <div className="container" style={{ padding: '50px 0 100px 0' }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
