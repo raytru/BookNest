@@ -1,14 +1,16 @@
-import '../styles/App.css';
+// 1. Core Libraries
 import { useState, useEffect } from 'react';
-import { supabase } from '../../supabaseClient';
-import LoginPage from '../pages/auth/LoginPage.jsx';
-import RegisterPage from '../pages/auth/RegisterPage.jsx';
-import RequestPasswordReset from '../pages/auth/RequestPasswordReset.jsx';
-import Account from '../pages/auth/Account.jsx';
-import HomePage from './HomePage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import UpdatePassword from './auth/UpdatePassword.jsx';
+import { supabase } from '../../supabaseClient'; // Assuming this is from a library or external file
+import '../styles/App.css';  
+
 import ToastConfig from "../components/ToastConfig.jsx";
+import Home from './Home.jsx';
+import Login from './auth/Login.jsx';
+import Register from '../pages/auth/Register.jsx';
+import ForgotPassword from './auth/ForgotPassword.jsx';
+import Account from '../pages/auth/Account.jsx';
+import UpdatePassword from './auth/UpdatePassword.jsx';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -40,10 +42,10 @@ function App() {
       <ToastConfig />
       <div className="container" style={{ padding: '50px 0 100px 0' }}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/LoginPage" element={!session ? <LoginPage /> : <Navigate to="/Account" />} />
-          <Route path="/RegisterPage" element={<RegisterPage />} />
-          <Route path="/RequestPasswordReset" element={<RequestPasswordReset />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/Login" element={!session ? <Login/> : <Navigate to="/Account" />} />
+          <Route path="/Register" element={<Register/>} />
+          <Route path="/ForgotPassword" element={<ForgotPassword />} />
           <Route path="/UpdatePassword" element={<UpdatePassword />} />
           <Route path="/Account" element={session ? <Account session={session} /> : <Navigate to="/LoginPage" />} />
           <Route path="*" element={<h1>404: Page Not Found</h1>} />

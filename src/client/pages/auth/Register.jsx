@@ -7,7 +7,7 @@ import { usePasswordMatch } from "../../hooks/usePasswordMatch.js";
 import { usePasswordValidation } from "../../hooks/usePasswordValidation.js";
 import { useUsernameValidation } from "../../hooks/useUsernameValidation.js";
 
-export default function Auth() {
+export default function Register() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
