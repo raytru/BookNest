@@ -9,7 +9,7 @@ import Home from './Home.jsx';
 import Login from './auth/Login.jsx';
 import Register from '../pages/auth/Register.jsx';
 import ForgotPassword from './auth/ForgotPassword.jsx';
-import Account from '../pages/auth/Account.jsx';
+import Account from '../pages/user/Account.jsx';
 import UpdatePassword from './auth/UpdatePassword.jsx';
 
 function App() {
@@ -40,14 +40,14 @@ function App() {
   return (
     <Router>
       <ToastConfig />
-      <div className="container" style={{ padding: '50px 0 100px 0' }}>
+      <div>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/Login" element={!session ? <Login/> : <Navigate to="/Account" />} />
-          <Route path="/Register" element={<Register/>} />
-          <Route path="/ForgotPassword" element={<ForgotPassword />} />
-          <Route path="/UpdatePassword" element={<UpdatePassword />} />
-          <Route path="/Account" element={session ? <Account session={session} /> : <Navigate to="/LoginPage" />} />
+          <Route path="/login" element={!session ? <Login /> : <Navigate to="/account" replace />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/updatepassword" element={<UpdatePassword />} />
+          <Route path="/account" element={session ? <Account session={session} /> : <Navigate to="/login" replace />} />
           <Route path="*" element={<h1>404: Page Not Found</h1>} />
         </Routes>
       </div>

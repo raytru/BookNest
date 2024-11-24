@@ -2,11 +2,17 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { supabase } from "../../../supabaseClient.js";
 
+import { useUsernameValidation } from "../../hooks/useUsernameValidation.js";
+
+
 export default function Account({ session }) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
+  const [usernameTouched, setUsenameTouched] = useState(false);
   const [avatar_url, setAvatarUrl] = useState(null);
   const [hasLoggedIn, setHasLoggedIn] = useState(false);
+
+  const usernameError = useUsernameValidation(username, usernameTouched);
 
   useEffect(() => {
     let ignore = false;
@@ -87,8 +93,14 @@ export default function Account({ session }) {
           type="text"
           required
           value={username || ""}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => {
+            setUsername(e.target.value)
+            setUsenameTouched(true);
+          }}
         />
+        {usernameTouched && usernameError && (
+          <p className="form-inline-error-message">{usernameError}</p>
+        )}
       </div>
       <div>
         <button

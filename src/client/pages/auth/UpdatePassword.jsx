@@ -1,22 +1,30 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { supabase } from "../../../supabaseClient.js";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../styles/forms.css";
-import { usePasswordMatch } from '../../hooks/usePasswordMatch.js';
-import { usePasswordValidation } from '../../hooks/usePasswordValidation.js';
+import { usePasswordMatch } from "../../hooks/usePasswordMatch.js";
+import { usePasswordValidation } from "../../hooks/usePasswordValidation.js";
 
 export default function UpdatePassword() {
   const [loading, setLoading] = useState(false);
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordTouched, setPasswordTouched] = useState(false);
 
-  // Automatically check password match when the values changeS
-  const passwordMatch = usePasswordMatch(password, confirmPassword);
-
   // Validate password length and special character/number requirement
-  const passwordError = usePasswordValidation(password, passwordTouched);
+  const { passwordError, isValid: isPasswordValid } = usePasswordValidation(
+    password,
+    passwordTouched
+  );
+
+  // Automatically check password match when the values change
+  const { passwordMatch, isValid: isPasswordMatch } = usePasswordMatch(
+    password,
+    confirmPassword
+  );
+
+  const formIsValid = isPasswordValid && isPasswordMatch;
 
   const navigate = useNavigate();
 
@@ -30,6 +38,11 @@ export default function UpdatePassword() {
       return;
     }
 
+    if (!formIsValid) {
+      toast.error("Please fix the errors before submitting.");
+      return;
+    }
+
     const { data, error } = await supabase.auth.updateUser({
       password: password,
     });
@@ -38,10 +51,9 @@ export default function UpdatePassword() {
 
     if (data) {
       toast.success("Password updated successfully");
-
       // Add a delay to allow the toast to show before redirecting
       setTimeout(() => {
-        navigate("/LoginPage");
+        navigate("/Login");
       }, 2000); // 2 seconds delay
     } else {
       toast.error(
@@ -51,13 +63,20 @@ export default function UpdatePassword() {
   };
 
   return (
-    <div className="row flex flex-center">
-      <div className="col-6 form-widget">
-        <h1 className="header">BookNest</h1>
-        <form className="form-widget" onSubmit={handlePasswordUpdate}>
-          <div>
+    <div className="bg-gray-200 min-h-screen flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-lg max-w-md w-3/4 p-11">
+        {/* Heading */}
+        <h1 className="text-3xl font-semibold text-center mb-8">BookNest</h1>
+
+        {/* Password update form */}
+        <form className="space-y-6" onSubmit={handlePasswordUpdate}>
+          {/* Password input */}
+          <div className="flex flex-col items-start">
+            <label className="block text-gray-700 text-sm font-semibold mb-1">
+              New Password
+            </label>
             <input
-              className="inputField"
+              className="w-full px-4 py-2 rounded-md border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
               type="password"
               placeholder="Your password"
               value={password}
@@ -68,12 +87,17 @@ export default function UpdatePassword() {
               }}
             />
             {passwordTouched && passwordError && (
-              <p className="form-inline-error-message ">{passwordError}</p>
+              <p className="text-red-500 text-sm">{passwordError}</p>
             )}
           </div>
-          <div>
+
+          {/* Password confirmation input */}
+          <div className="flex flex-col items-start">
+            <label className="block text-gray-700 text-sm font-semibold mb-1">
+              Confirm New Password
+            </label>
             <input
-              className="inputField"
+              className="w-full px-4 py-2 rounded-md border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
               type="password"
               placeholder="Password confirmation"
               value={confirmPassword}
@@ -81,21 +105,18 @@ export default function UpdatePassword() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             {!passwordMatch && confirmPassword && (
-              <p className="form-inline-error-message ">Passwords do not match.</p>
+              <p className="text-red-500 text-sm">Passwords do not match.</p>
             )}
           </div>
+
+          {/* Submit button */}
           <div>
-            <button className={"button block"} disabled={loading}>
-              {loading ? <span>Loading</span> : <span>Update password</span>}
+            <button
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg"
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Update password"}
             </button>
-          </div>
-          <div className="form-footer">
-            <Link to="/LoginPage" className="unstyled-link">
-              Already have an account?
-            </Link>
-            <Link to="/RegisterPage" className="unstyled-link">
-              Don&apos;t have an account?
-            </Link>
           </div>
         </form>
       </div>

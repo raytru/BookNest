@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import ToastConfig from "../../components/ToastConfig.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { supabase } from "../../../supabaseClient.js"; // Importing the Supabase client to handle authentication
 import { Link } from "react-router-dom"; // Importing Link for routing to other pages
@@ -37,58 +36,61 @@ export default function Auth() {
   };
 
   return (
-    <div className="row flex flex-center">
-      <div className="col-6 form-widget">
-        <h1 className="header">BookNest</h1> {/* Page title */}
-        <form className="form-widget" onSubmit={handleLogin}>
-          {" "}
-          {/* Login form */}
-          {/* Email input field */}
-          <div>
-            <input
-              className="inputField"
-              type="email"
-              placeholder="Your email"
-              value={email}
-              required={true}
-              onChange={(e) => setEmail(e.target.value)} // Update email state when the input changes
-            />
-          </div>
-          {/* Password input field */}
-          <div>
-            <input
-              className="inputField"
-              type="password"
-              placeholder="Your password"
-              value={password}
-              required={true}
-              onChange={(e) => setPassword(e.target.value)} // Update password state when the input changes
-            />
-          </div>
-          {/* Login button */}
-          <div>
-            <button className={"button block"} disabled={loading}>
-              {" "}
-              {/* Disable button when loading */}
-              {loading ? <span>Loading</span> : <span>Log in</span>}{" "}
-              {/* Show loading text when authentication is in progress */}
-            </button>
-            {/* Include the ToastConfig component */}
-            <ToastConfig />
-          </div>
-          {/* Footer with links for forgotten password and account registration */}
-          <div className="form-footer">
-            <Link to="/RegisterPage" className="unstyled-link">
-              Don&apos;t have an account?
-            </Link>{" "}
-            {/* Link to registration page */}
-            <Link to="/RequestPasswordReset" className="unstyled-link">
-              Forgot your password?
-            </Link>{" "}
-            {/* Link to password reset page */}
-          </div>
-        </form>
+    <div className="bg-gray-200 flex min-h-screen flex-col justify-center items-center px-6 py-12 lg:px-8">
+  {/* Card container */}
+  <div className="bg-white rounded-lg shadow-lg max-w-md w-3/4 p-10">
+    {/* Heading */}
+    <h1 className="mb-9 text-3xl font-semibold">Login</h1>
+    
+    {/* Login form */}
+    <form className="space-y-6" onSubmit={handleLogin}>
+      {/* Email input */}
+      <div className="flex flex-col items-start">
+        <label className="block text-gray-700 text-sm font-semibold mb-1">Email</label>
+        <input
+          className="w-full px-4 py-2 rounded-md border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          type="email"
+          value={email}
+          required={true}
+          onChange={(e) => setEmail(e.target.value)} // Update email state
+        />
       </div>
+
+      {/* Password input */}
+      <div className="flex flex-col items-start">
+        <label className="block text-gray-700 text-sm font-semibold mb-1">Password</label>
+        <input
+          className="w-full px-4 py-2 rounded-md border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          type="password"
+          value={password}
+          required={true}
+          onChange={(e) => setPassword(e.target.value)} // Update password state
+        />
+        {/* Forgot password link */}
+        <div className="flex justify-end w-full mt-1">
+        <Link to="/ForgotPassword" className="text-blue-500 text-sm hover:underline mt-1">
+          Forgot your password?
+        </Link>
+        </div>
+      </div>
+
+      {/* Login button */}
+      <button
+        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg"
+        disabled={loading}
+      >
+        {loading ? "Loading..." : "Log in"}
+      </button>
+    </form>
+
+    {/* Footer with register link */}
+    <div className="mt-6 flex items-center justify-center">
+      <p className="mr-1.5 text-sm">Don&apos;t have an account?</p>
+      <Link to="/Register" className="text-blue-500 text-sm hover:underline">
+        Sign up
+      </Link>
     </div>
+  </div>
+</div>
   );
 }

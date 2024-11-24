@@ -1,25 +1,39 @@
 import { useState, useEffect } from "react";
 
-export function useUsernameValidation(username, usernameTouched) {
+export function useUsernameValidation(username, usernameTouched, config = {}) {
+  const {
+    minLength = 3,
+    maxLength = 15,
+    disallowedChars = /[!@#$%^&*(),.?":{}|<>]/,
+    containsWhitespace = /\s/,
+  } = config;
+
   const [usernameError, setUsernameError] = useState("");
+  const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
     if (usernameTouched) {
       if (username.length === 0) {
-        setUsernameError(""); // Clear error if no input
-      } else if (username.length < 3) {
-        setUsernameError("Username should be more than 3 characters.");
-      } else if (username.length > 15) {
-        setUsernameError("Username should be less than 15 characters.");
-      } else if (/[!@#$%^&*(),.?":{}|<>]/.test(username)) {
-        setUsernameError(
-          "Username contains invalid characters. Please remove special characters like !, @, #, $, %, etc."
-        );
+        setUsernameError("");
+        setIsValid(false);
+      } else if (username.length < minLength) {
+        setUsernameError(`Username should be at least ${minLength} characters.`);
+        setIsValid(false);
+      } else if (username.length > maxLength) {
+        setUsernameError(`Username should be less than ${maxLength} characters.`);
+        setIsValid(false);
+      } else if (disallowedChars.test(username)) {
+        setUsernameError("Username contains invalid characters.");
+        setIsValid(false);
+      } else if (containsWhitespace.test(username)) {
+        setUsernameError("Username cannot contain spaces");
       } else {
-        setUsernameError(""); // Clear error if valid
+        setUsernameError("");
+        setIsValid(true);
       }
     }
-  }, [username, usernameTouched]);
+  }, [username, usernameTouched, minLength, maxLength, disallowedChars, containsWhitespace]);
 
-  return usernameError;
+  return { usernameError, isValid };
 }
+
